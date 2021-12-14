@@ -1,0 +1,39 @@
+openapi: 3.0.3
+
+info:
+  description: Aggregation service
+  version: 0.0.0
+  title: Aggregation service
+paths:
+  /current-vehicle-statistics:
+    get:
+      parameters:
+        - in: query
+          name: vehicleId
+          description: Id of vehicle
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Statistics object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  averageSpeed:
+                    type: number
+                    format: double
+                  maximumSpeed:
+                    type: number
+                    format: double
+                  lastTimestamp:
+                    type: integer
+                    format: int32
+                  numberOfCharges:
+                    type: integer
+                    format: int32
+                  vehicleState:
+                    type: string
+                    enum: [DRIVING, CHARGING, PARKED, UNKNOWN_STATE]

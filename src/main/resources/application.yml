@@ -1,0 +1,18 @@
+mp:
+  messaging:
+    incoming:
+      ra-telemetry-data:
+        connector: smallrye-kafka
+        topic: telemetry_data
+        auto:
+          offset:
+            reset: earliest
+        value:
+          deserializer: io.github.rinmalavi.msg.TelemetryDataRawDeserializer
+
+quarkus:
+  kafka:
+    devservices:
+      port: 43210
+app:
+  moreThanStopTime: 10000
