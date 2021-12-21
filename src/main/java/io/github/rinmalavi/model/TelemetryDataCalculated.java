@@ -1,36 +1,40 @@
 package io.github.rinmalavi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class TelemetryDataCalculated {
-    private final Double averageSpeed;
-    private final Double maximumSpeed;
-    private final Long lastTimestamp;
-    private final Long lastTimeMoving;
-    private final Integer numberOfCharges;
+    private final Optional<Double> averageSpeed;
+    private final Optional<Double> maximumSpeed;
+    private final Optional<Long> lastTimestamp;
+    private final Optional<Long> lastTimeMoving;
+    private final Optional<Integer> numberOfCharges;
     private final VehicleState vehicleState;
 
-    public Double getAverageSpeed() {
+    public Optional<Double> getAverageSpeed() {
         return averageSpeed;
     }
 
-    public Double getMaximumSpeed() {
+    public Optional<Double> getMaximumSpeed() {
         return maximumSpeed;
     }
 
-    public Long getLastTimestamp() {
+    public Optional<Long> getLastTimestamp() {
         return lastTimestamp;
     }
 
     @JsonIgnore
-    public Long getLastTimeMoving() {
+    public Optional<Long> getLastTimeMoving() {
         return lastTimeMoving;
     }
 
-    public Integer getNumberOfCharges() {
+    public Optional<Integer> getNumberOfCharges() {
         return numberOfCharges;
     }
 
@@ -39,11 +43,11 @@ public class TelemetryDataCalculated {
     }
 
     public TelemetryDataCalculated() {
-        this.averageSpeed = null;
-        this.maximumSpeed = null;
-        this.lastTimestamp = null;
-        this.lastTimeMoving = null;
-        this.numberOfCharges = null;
+        this.averageSpeed = Optional.empty();
+        this.maximumSpeed = Optional.empty();;
+        this.lastTimestamp = Optional.empty();;
+        this.lastTimeMoving = Optional.empty();;
+        this.numberOfCharges = Optional.empty();;
         this.vehicleState = VehicleState.UNKNOWN_STATE;
     }
 }

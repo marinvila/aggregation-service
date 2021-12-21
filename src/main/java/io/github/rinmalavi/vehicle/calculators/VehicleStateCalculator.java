@@ -7,7 +7,6 @@ import io.github.rinmalavi.model.VehicleState;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.Optional;
 
 @ApplicationScoped
 public class VehicleStateCalculator {
@@ -16,7 +15,7 @@ public class VehicleStateCalculator {
     long moreThanStopTime;
 
     public VehicleState calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
-        Long lastTimestamp = Optional.ofNullable(lastValue.getLastTimestamp()).orElse(0L);
+        Long lastTimestamp = lastValue.getLastTimestamp().orElse(0L);
         if (tdr.recordedAt < lastTimestamp)
             return lastValue.getVehicleState();
         boolean isCharging = tdr.signalValues.getOrDefault(SignalValue.IS_CHARGING, 0d) == 1d;
@@ -28,7 +27,7 @@ public class VehicleStateCalculator {
         if (currentSpeed > 0)
             return VehicleState.DRIVING;
 
-        if (tdr.recordedAt - lastValue.getLastTimeMoving() > moreThanStopTime)
+        if (tdr.recordedAt - lastValue.getLastTimeMoving().orElse(tdr.recordedAt) > moreThanStopTime)
             return VehicleState.PARKED;
 
         return VehicleState.UNKNOWN_STATE;

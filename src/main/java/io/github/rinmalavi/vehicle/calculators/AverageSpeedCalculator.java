@@ -5,20 +5,25 @@ import io.github.rinmalavi.model.TelemetryDataCalculated;
 import io.github.rinmalavi.model.TelemetryDataRaw;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Optional;
 
 @ApplicationScoped
 public class AverageSpeedCalculator {
 
-    public Double calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
-        if (lastValue.getLastTimestamp() != null && tdr.recordedAt > lastValue.getLastTimestamp()) {
-            Double odometer = tdr.signalValues.get(SignalValue.ODOMETER);
-            Double drivingTime = tdr.signalValues.get(SignalValue.DRIVING_TIME);
-            if (odometer != null && drivingTime != null) {
-                return getSpeed(odometer, drivingTime);
-            }
-        }
-
-        return lastValue.getAverageSpeed();
+    public Optional<Double> calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
+        return
+                lastValue.getLastTimestamp()
+                        .filter(lastValueTimestamp -> lastValueTimestamp < tdr.recordedAt).map(
+                                lvt -> {
+                                    Optional<Double> optOdometer = Optional.ofNullable(tdr.signalValues.get(SignalValue.ODOMETER));
+                                    Optional<Double> optDriveTime = Optional.ofNullable(tdr.signalValues.get(SignalValue.DRIVING_TIME));
+                                    return optOdometer.flatMap(
+                                            odometer ->
+                                                    optDriveTime.map(
+                                                            driveTime -> getSpeed(odometer, driveTime)
+                                                    )
+                                    );
+                                }).orElse(lastValue.getAverageSpeed());
     }
 
     private Double getSpeed(Double odometer, Double drivingTime) {

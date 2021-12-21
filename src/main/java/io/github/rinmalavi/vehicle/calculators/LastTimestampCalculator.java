@@ -8,8 +8,8 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class LastTimestampCalculator {
-    public Long calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
-        Long lastTimestamp = Optional.ofNullable(lastValue.getLastTimestamp()).orElse(0l);
-        return Math.max(tdr.recordedAt, lastTimestamp);
+    public Optional<Long> calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
+        Long lastTimestamp = lastValue.getLastTimestamp().orElse(0l);
+        return Optional.of(Math.max(tdr.recordedAt, lastTimestamp));
     }
 }

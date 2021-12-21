@@ -10,9 +10,9 @@ import java.util.Optional;
 @ApplicationScoped
 public class MaximumSpeedCalculator {
 
-    public Double calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
+    public Optional<Double> calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
         Double currentSpeed = tdr.signalValues.getOrDefault(SignalValue.CURRENT_SPEED, 0d);
-        Double lastMaximumSpeed = Optional.ofNullable(lastValue.getMaximumSpeed()).orElse(0d);
-        return Math.max(lastMaximumSpeed, currentSpeed);
+        Double lastMaximumSpeed = lastValue.getMaximumSpeed().orElse(0d);
+        return Optional.of(Math.max(lastMaximumSpeed, currentSpeed));
     }
 }

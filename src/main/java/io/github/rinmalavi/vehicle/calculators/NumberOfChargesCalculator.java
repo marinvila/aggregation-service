@@ -10,17 +10,21 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class NumberOfChargesCalculator {
-    public Integer calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
-        Integer numberOfCharges = Optional.ofNullable(lastValue.getNumberOfCharges()).orElse(0);
-        Long lastTimestamp = Optional.ofNullable(lastValue.getLastTimestamp()).orElse(0L);
-        return numberOfCharges +
-                ((tdr.recordedAt > lastTimestamp && stateChanged(tdr, lastValue)) ? 1 : 0);
+    public Optional<Integer> calculate(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
+        Integer numberOfCharges = lastValue.getNumberOfCharges().orElse(0);
+
+        return Optional.of(
+                numberOfCharges +
+                        lastValue.getLastTimestamp()
+                                .filter(lastTimestamp -> tdr.recordedAt > lastTimestamp && stateChanged(tdr, lastValue))
+                                .map(a -> 1)
+                                .orElse(0));
     }
 
     private boolean stateChanged(TelemetryDataRaw tdr, TelemetryDataCalculated lastValue) {
         boolean isCharging = tdr.signalValues.getOrDefault(SignalValue.IS_CHARGING, 0d).equals(1d);
 
         return
-                lastValue.getVehicleState().equals(VehicleState.CHARGING) && ! isCharging;
+                lastValue.getVehicleState().equals(VehicleState.CHARGING) && !isCharging;
     }
 }

@@ -3,7 +3,6 @@ package io.github.rinmalavi.msg;
 import io.github.rinmalavi.model.SignalValue;
 import io.github.rinmalavi.model.TelemetryDataCalculated;
 import io.github.rinmalavi.model.TelemetryDataRaw;
-import io.github.rinmalavi.store.CurrentVehicleStateStore;
 import io.github.rinmalavi.test.KafkaTestResourceLifecycleManager;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -40,7 +39,7 @@ class TelemetryDataListenerTest {
                 .then();
         response.statusCode(200);
         TelemetryDataCalculated tdc = response.extract().as(TelemetryDataCalculated.class);
-        Assertions.assertEquals(tdc.getLastTimestamp(), 3);
+        Assertions.assertEquals(Optional.of(3l), tdc.getLastTimestamp());
         System.out.println(response.extract().asPrettyString());
     }
 
@@ -87,7 +86,7 @@ class TelemetryDataListenerTest {
                 .then();
         response.statusCode(200);
         TelemetryDataCalculated tdc = response.extract().as(TelemetryDataCalculated.class);
-        Assertions.assertEquals(2, tdc.getNumberOfCharges());
+        Assertions.assertEquals(Optional.of(2), tdc.getNumberOfCharges());
         System.out.println(response.extract().asPrettyString());
     }
 }
